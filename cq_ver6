@@ -1,0 +1,136 @@
+# 导入tkinter模块
+import tkinter as tk
+import threading
+from time import sleep
+from random import randint
+from tkinter import messagebox
+
+# 创建窗口对象
+window = tk.Tk()
+window.title('抽签')
+# 窗口大小
+window.minsize(600, 500)
+# 将学生姓名放入列表中
+name_list = ["王馨尉",
+"张慧",
+"马爽",
+"王钰博",
+"辛梓同",
+"狄畅",
+"黄子轩",
+"魏宇涵",
+"刘春炜",
+"柴汶溪",
+"顾天诚",
+"刘祉璠",
+"靳旭",
+"陈继涛",
+"郑宇航",
+"孟天威",
+"张丹丹",
+"丛熙",
+"张族康",
+"李俊皓",
+"田在旭",
+"赵嵘嘉",
+"王皓鸣",
+"邹宛蓉",
+"关琳琦",
+"康可馨",
+"姜贺华",
+"李 鸿",
+"曲仲博",
+"孟祥慧",
+"张沐琦",
+"赵明辉",
+"杜佳洁",
+"陈弈妃",
+"杜遥遥",
+"李雨梦",
+"姜宁",
+"李斯禹",
+"刘若彤",
+"吕明聪",
+"孙睿晗",
+"王美骄",
+"王科研",
+"李明哲",
+"邸子轩",
+"陈劲池",
+"赵旭洋",
+"谷慧子",
+"袁彩嘉"
+]
+# 创建一个空列表，用来放置做好的按钮
+btn_list = []
+# 循环遍历学生列表的长度
+for i in range(len(name_list)):
+	# 设置按钮，传入学生姓名作为按钮上显示的文本，设置字体，设置按钮颜色为白色
+    button = tk.Button(window, text=name_list[i], font=('SimSun 15 bold'), bg='white')
+    # 将按钮添加入按钮列表
+    btn_list.append(button)
+    # 按行摆放按钮，因为每行摆放6个，所以对6进行取商和余数。
+    # 根据每行摆放按钮数量不同可以更改
+    y, x = divmod(i, 7)
+    # 放置按钮，位置会随着i的值变化，依次摆放
+    button.place(x=25+x*80, y=25+y*50, width=80, height=50)
+
+
+def round():
+    # 点击按钮后，判断按钮显示的文本，然后换成相反的
+    if btn_start['text'] == '开始':
+        btn_start['text'] = '停止'
+    else:
+    	# 如果点击按钮时，显示的文本是‘停止’，就会跳出函数。
+        btn_start['text'] = '开始'
+        return
+    #def print_selection(v):
+        window.config(text='you have selected ' + v)
+        # 第5步，创建一个尺度滑条，长度200字符，从0开始10结束，以2为刻度，精度为0.01，触发调用print_selection函数
+    #    s = tk.Scale(window, label='try me', from_=0, to=10, orient=tk.HORIZONTAL, length=200, showvalue=0,tickinterval=2, resolution=0.01, command=print_selection)
+    #    s.place(x=220, y=440)
+    # 设置按钮列表的长度，也就是学生数量
+    m = len(btn_list)
+    # 随机生成i的值，i将会作为按钮列表的索引值
+    # 也就是点击开始按钮时会随机开始
+    i = randint(0, m-1)
+    while True:
+        # 遍历所有的按钮，将所有的组件背景变为白色
+        for x in btn_list:
+            x['bg'] = 'white'
+        # 将当前数值对应#的组件的背景颜色设置成红色，表示选中的状态
+        btn_list[i]['bg'] = '#66ccff'
+        # 判断按钮显示的文本是否是‘开始’，
+        # 因为只有点击停止按钮时显示文本才会变成‘开始’，弹窗出现，跳出循环
+        if btn_start['text'] == '开始':
+        	# 设置弹窗，使用showinfo函数展示中奖信息
+            #tk.messagebox.showinfo('中奖', message='恭喜{}成为幸运儿'.format(btn_list[i]['text']))
+            # 新建一个窗口达到弹窗的效果，可以设置字体大小和窗口大小
+            # 有需要的可以使用这部分代码
+            # popup = tk.Tk()
+            # popup.title('中奖')
+            # text = '恭喜{}成为幸运儿'.format(btn_list[i]['text'])
+            # msg = tk.Label(popup, text=text, font=('SimSun 15 bold'), width=30, height=5)
+            # # 布局函数pack
+            # msg.pack(side=tk.LEFT)
+            # popup.mainloop()
+            break
+        # 重新将i赋值一个随机坐标，目的是为了让抽签时每次都是随机选中按钮的
+        i = randint(0, m-1)
+        # 延时，可以更改时间控制速度
+        sleep(0.05)
+
+
+# 创建线程的函数
+def newtask():
+    # 创建线程并运行，target传入开始抽签的函数
+    t = threading.Thread(target=round)
+    t.start()
+
+
+# 设置开始按钮，commond传入点击按钮时执行的函数
+btn_start = tk.Button(window, text='开始', font=('SimSun 15 bold'), command=newtask)
+# 放置开始按钮
+btn_start.place(x=220, y=400, width=200, height=80)
+# 事件循环，保持窗口不会关闭
+window.mainloop()
